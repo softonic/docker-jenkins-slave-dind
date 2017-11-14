@@ -1,12 +1,12 @@
-FROM docker:17.07
+FROM docker:17.10
 
 MAINTAINER Viktor Farcic <viktor@farcic.com>
 
-ARG "version=0.2.0"
-ARG "build_date=unknown"
-ARG "commit_hash=unknown"
-ARG "vcs_url=unknown"
-ARG "vcs_branch=unknown"
+ARG version="0.2.0"
+ARG build_date="unknown"
+ARG commit_hash="unknown"
+ARG vcs_url="unknown"
+ARG vcs_branch="unknown"
 
 LABEL org.label-schema.vendor="vfarcic" \
     org.label-schema.name="jenkins-swarm-agent" \
@@ -20,8 +20,8 @@ LABEL org.label-schema.vendor="vfarcic" \
     org.label-schema.schema-version="1.0" \
     org.label-schema.build-date=$build_date
 
-ENV SWARM_CLIENT_VERSION="3.3" \
-    DOCKER_COMPOSE_VERSION="1.16.1" \
+ENV SWARM_CLIENT_VERSION="3.6" \
+    DOCKER_COMPOSE_VERSION="1.17.1" \
     COMMAND_OPTIONS="" \
     USER_NAME_SECRET="" \
     PASSWORD_SECRET=""
