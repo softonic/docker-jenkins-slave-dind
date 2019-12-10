@@ -1,4 +1,4 @@
-FROM docker:18.09-dind
+FROM docker:19.03-dind
 
 MAINTAINER Viktor Farcic <viktor@farcic.com>
 
@@ -20,16 +20,22 @@ LABEL org.label-schema.vendor="vfarcic" \
     org.label-schema.schema-version="1.0" \
     org.label-schema.build-date=$build_date
 
-ENV SWARM_CLIENT_VERSION="3.15" \
-    DOCKER_COMPOSE_VERSION="1.23.2" \
+ENV SWARM_CLIENT_VERSION="3.17" \
+    DOCKER_COMPOSE_VERSION="1.25.0" \
+    BUILDX_VERSION="v0.3.1" \
     COMMAND_OPTIONS="" \
     USER_NAME_SECRET="" \
     PASSWORD_SECRET=""
 
-RUN adduser -G root -D jenkins && \
-    apk add --no-cache bash openjdk8-jre python py-pip git openssh ca-certificates openssl curl && \
-    wget -q https://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/swarm-client/${SWARM_CLIENT_VERSION}/swarm-client-${SWARM_CLIENT_VERSION}.jar -P /home/jenkins/ && \
-    pip install docker-compose
+RUN adduser -G root -D jenkins &&\
+    apk add --no-cache bash openjdk8-jre git openssh ca-certificates openssl curl python py-pip python-dev libffi-dev openssl-dev gcc libc-dev make &&\
+    wget -q https://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/swarm-client/${SWARM_CLIENT_VERSION}/swarm-client-${SWARM_CLIENT_VERSION}.jar -P /home/jenkins/ &&\
+    pip install docker-compose &&\
+    curl -LO https://github.com/docker/buildx/releases/download/${BUILDX_VERSION}/buildx-${BUILDX_VERSION}.linux-amd64 &&\
+    ls -la && mkdir -p ~/.docker/cli-plugins &&\
+    mv buildx-${BUILDX_VERSION}.linux-amd64 ~/.docker/cli-plugins/docker-buildx &&\
+    chmod a+x ~/.docker/cli-plugins/docker-buildx &&\
+    docker buildx install
 
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
